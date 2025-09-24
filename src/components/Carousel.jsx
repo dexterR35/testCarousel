@@ -1,14 +1,15 @@
-import React, { useState, useEffect } from 'react';
+import React, { useEffect, useRef } from 'react';
+import $ from 'jquery';
+import 'slick-carousel/slick/slick.css';
+import 'slick-carousel/slick/slick-theme.css';
 
 import image1 from '../assets/2.png';
 import image2 from '../assets/3.png';
 import image3 from '../assets/Desktop-banner.png';
 
-
-
 const Carousel = () => {
-  const [currentSlide, setCurrentSlide] = useState(0);
-  
+  const sliderRef = useRef(null);
+
   const slides = [
     {
       id: 1,
@@ -27,46 +28,78 @@ const Carousel = () => {
     }
   ];
 
-  // Autoplay effect
   useEffect(() => {
-    const interval = setInterval(() => {
-      setCurrentSlide((prev) => (prev + 1) % slides.length);
-    }, 3000);
+    let isMounted = true;
 
-    return () => clearInterval(interval);
-  }, [slides.length]);
+    const initializeSlick = async () => {
+      try {
+      
+        await import('slick-carousel/slick/slick.min.js');
+        
+       
+        await new Promise(resolve => setTimeout(resolve, 100));
+        
+        if (isMounted && sliderRef.current && typeof $ !== 'undefined' && $.fn.slick) {
+          $(sliderRef.current).slick({
+            dots: false,                    
+            infinite: true,                 
+            speed: 800,
+            slidesToShow: 1,
+            slidesToScroll: 1,
+            autoplay: true,                
+            autoplaySpeed: 2000,           
+            pauseOnHover: true,           
+            fade: true,                   
+            cssEase: 'ease-in-out',
+            arrows: false,                 
+            responsive: [                   
+              {
+                breakpoint: 768,
+                settings: {
+                  autoplaySpeed: 2500,    
+                  speed: 600
+                }
+              },
+              {
+                breakpoint: 480,
+                settings: {
+                  autoplaySpeed: 2000,     
+                  speed: 500
+                }
+              }
+            ]
+          });
+        }
+      } catch (error) {
+        console.error('Error loading Slick Carousel:', error);
+      }
+    };
+
+    initializeSlick();
+
+   
+    return () => {
+      isMounted = false;
+      if (sliderRef.current && $(sliderRef.current).hasClass('slick-initialized')) {
+        $(sliderRef.current).slick('unslick');
+      }
+    };
+  }, []);
 
   return (
-    <div className="container-slider">
-      <div className="slider caroselloPromo">
-        <div className="slick-list">
-          <div className="slick-track">
-            {slides.map((slide, index) => (
-              <div 
-                key={slide.id} 
-                className={`slick-slide ${index === currentSlide ? 'slick-current slick-active' : ''}`}
-                style={{
-                  opacity: index === currentSlide ? 1 : 0,
-                  transition: 'opacity 600ms ease-in-out',
-                  position: 'absolute',
-                  top: 0,
-                  left: 0,
-                  width: '100%',
-                  height: '100%'
-                }}
-              >
-                <div className="immagine-slider" style={{maxHeight: '300px', width: '100%'}}>
-                  <img 
-                    className="carosello-promo" 
-                    src={slide.image} 
-                    alt={slide.alt}
-                    style={{width: '100%', height: '100%', objectFit: 'cover'}}
-                  />
-                </div>
-              </div>
-            ))}
+    <div className="carousel-container">
+      <div ref={sliderRef} className="slick-carousel">
+        {slides.map((slide) => (
+          <div key={slide.id} className="slide-item">
+            <div className="slide-content">
+              <img 
+                src={slide.image} 
+                alt={slide.alt}
+                className="slide-image"
+              />
+            </div>
           </div>
-        </div>
+        ))}
       </div>
     </div>
   );
