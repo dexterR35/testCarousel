@@ -33,11 +33,8 @@ const Carousel = () => {
 
     const initializeSlick = async () => {
       try {
-      
+        // Import Slick Carousel
         await import('slick-carousel/slick/slick.min.js');
-        
-       
-        await new Promise(resolve => setTimeout(resolve, 100));
         
         if (isMounted && sliderRef.current && typeof $ !== 'undefined' && $.fn.slick) {
           $(sliderRef.current).slick({
