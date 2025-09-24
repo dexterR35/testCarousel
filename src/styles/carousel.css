@@ -1,0 +1,35 @@
+/* Full Width Carousel Styles */
+*,*::after,*::before{
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+body {
+  background: black;
+
+  height: 100vh;
+  width: 100%;
+}
+.container-fluid {
+  width: 100vw !important;
+  height: 100%;
+  max-width: 100%;
+  padding: 0;
+margin: 0 auto;
+}
+
+
+.slider.caroselloPromo {
+  max-width: calc(100% - 48px) !important;
+  margin: 24px auto 0 auto;
+  border-radius: 24px;
+  overflow: hidden;
+}
+
+
+
+
+/* Navigation controls removed - autoplay only */
+
+
